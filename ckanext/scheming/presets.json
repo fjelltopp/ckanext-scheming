@@ -41,6 +41,13 @@
       }
     },
     {
+      "preset_name": "org_to_allow_transfer_to",
+      "values": {
+        "validators": "organization_id_exists unicode",
+        "form_snippet": "org_to_allow_transfer_to.html"
+      }
+    },
+    {
       "preset_name": "resource_url_upload",
       "values": {
         "validators": "ignore_missing unicode remove_whitespace",

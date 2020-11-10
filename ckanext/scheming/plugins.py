@@ -127,6 +127,7 @@ class _SchemingMixin(object):
             'get_missing_resources': unaids_helpers.get_missing_resources,
             'get_user': unaids_helpers.get_user,
             'get_date': unaids_helpers.get_date,
+            'get_all_organizations': unaids_helpers.get_all_organizations,
             'get_resource_field': unaids_helpers.get_resource_field,
             'scheming_resource_view_get_fields': unaids_helpers.scheming_resource_view_get_fields,
             'scheming_country_list': unaids_helpers.scheming_country_list,
