@@ -101,9 +101,3 @@ def get_resource_field(dataset_type, resource_type, field_name):
         return field
     except IndexError:
         return {}
-
-@helpers.helper
-def get_all_organizations():
-    data_dict = {'all_fields': True}
-    results = get_action('organization_list')({}, data_dict)
-    return results
