@@ -17,9 +17,18 @@ Example:
     <h3>{{ _('Core Resources') }}</h3>  
     {% if core_resources %}
       <ul class="resource-list">
-        {% for resource in core_resources %}
-          {% snippet 'package/snippets/resource_item.html', pkg=pkg, res=resource, can_edit=can_edit, is_activity_archive=is_activity_archive %}
-        {% endfor %}
+        {% asset 'ckanext-unaids/MockupComponentStyles' %}
+        <div
+            id="MockupComponent"
+            data-lfsServer="{{ h.blob_storage_server_url() }}"
+            data-maxResourceSize="{{ h.max_resource_size() }}"
+            data-orgId="{{ pkg.organization.name }}"
+            data-datasetName="{{ pkg.name }}"
+            data-defaultFields="{{ h.bulk_file_uploader_default_fields() }}"
+        >
+            <span class="text-muted">{{ _('Loading') }}</span>
+        </div>
+        {% asset 'ckanext-unaids/MockupComponentScripts' %}      
       </ul>
     {% else %}
       <p class="empty">{{ _('This dataset has no core resources') }}</p>
