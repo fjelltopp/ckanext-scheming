@@ -28,7 +28,15 @@ Example:
         >
             <span class="text-muted">{{ _('Loading') }}</span>
         </div>
-        {% asset 'ckanext-unaids/MockupComponentScripts' %}      
+        <style>
+          #MockupComponent .badge{
+            float: none !important;
+          }
+          #MockupComponent .badge, select{
+            border-radius: 3px;
+          }
+        </style>
+        {% asset 'ckanext-unaids/MockupComponentScripts' %}
       </ul>
     {% else %}
       <p class="empty">{{ _('This dataset has no core resources') }}</p>
