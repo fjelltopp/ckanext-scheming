@@ -1,0 +1,44 @@
+{
+    "scheming_version": 1,
+    "dataset_type": "autofill-validator",
+    "name": "Auto create valid name",
+    "link_name": "Auto create valid name",
+    "about": "",
+    "about_url": "http://github.com/ckan/ckanext-scheming",
+    "add_data_on_create": false,
+    "dataset_fields": [{
+            "field_name": "title",
+            "label": "Title:",
+            "form_snippet": "text.html",
+            "classes": ["hidden"]
+        },
+        {
+            "field_name": "name",
+            "label": "URL",
+            "form_snippet": "text.html",
+            "validators": "auto_create_valid_name not_empty unicode name_validator package_name_validator",
+            "classes": ["hidden"]
+        },
+        {
+            "label": "Location",
+            "field_name": "location"
+        },
+        {
+            "label": "Year",
+            "field_name": "year",
+            "validators": "autofill"
+        },
+        {
+            "label": "Schema",
+            "field_name": "schema",
+            "field_value": "art_3",
+            "validators": "autofill"
+        },
+        {
+            "label": "Type",
+            "field_name": "dataset_type",
+            "default": "data-type",
+            "validators": "autofill"
+        }
+    ]
+}
