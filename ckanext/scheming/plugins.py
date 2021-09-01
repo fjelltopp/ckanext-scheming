@@ -151,7 +151,8 @@ class _SchemingMixin(object):
             'autogenerate': unaids_validators.autogenerate,
             'unique_combination': unaids_validators.unique_combination,
             'auto_create_valid_name': unaids_validators.auto_create_valid_name,
-            'scheming_shapefile': unaids_validators.scheming_shapefile
+            'scheming_shapefile': unaids_validators.scheming_shapefile,
+            'autofill': unaids_validators.autofill
         }
 
     @run_once_for_caller('_scheming_add_template_directory', lambda: None)
