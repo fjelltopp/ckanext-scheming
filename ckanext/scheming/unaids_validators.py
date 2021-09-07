@@ -109,6 +109,17 @@ def autogenerate(field, schema):
     return validator
 
 
+@scheming_validator
+def autofill(field, schema):
+    field_value = field.get(u'field_value', field.get('default', ''))
+
+    def validator(key, data, errors, context):
+        if not data.get(key):
+            data[key] = field_value
+
+    return validator
+
+
 def __lower_formatter(input):
     return input.lower()
 
