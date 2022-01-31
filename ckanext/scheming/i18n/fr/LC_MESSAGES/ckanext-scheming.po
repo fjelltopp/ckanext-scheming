@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-scheming 1.2.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-01-11 08:31+0000\n"
+"POT-Creation-Date: 2022-01-11 08:51+0000\n"
 "PO-Revision-Date: 2020-12-15 10:25+0300\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -25,7 +25,7 @@ msgstr "Type {thing} non compatible : {t}"
 
 #: ckanext/scheming/plugins.py:306
 msgid "Unsupported dataset type: {t}"
-msgstr "Jeu de données non compatible : {t}"
+msgstr "Ensemble de données non compatible : {t}"
 
 #: ckanext/scheming/unaids_validators.py:58
 msgid "A package already exists for: {}. Please update existing package."
@@ -37,7 +37,7 @@ msgstr "choix inattendu \"{value}\""
 
 #: ckanext/scheming/validation.py:205
 msgid "expecting list of strings"
-msgstr "en attente de la liste de valeurs"
+msgstr "en attente de la liste de chaînes de caractères"
 
 #: ckanext/scheming/validation.py:223
 msgid "unexpected choice \"{element}\""
@@ -90,11 +90,11 @@ msgstr "Privé"
 
 #: ckanext/scheming/templates/scheming/form_snippets/organization.html:30
 msgid "Public"
-msgstr "Publique"
+msgstr "Public"
 
 #: ckanext/scheming/templates/scheming/group/group_form.html:22
 msgid "Are you sure you want to delete this Group?"
-msgstr "Voulez-vous supprimer ce groupe ?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce groupe ?"
 
 #: ckanext/scheming/templates/scheming/group/group_form.html:23
 #: ckanext/scheming/templates/scheming/organization/group_form.html:24
@@ -107,7 +107,7 @@ msgstr "Enregistrer le groupe"
 
 #: ckanext/scheming/templates/scheming/organization/group_form.html:23
 msgid "Are you sure you want to delete this Organization?"
-msgstr "Voulez-vous supprimer cette organisation ?"
+msgstr "Êtes-vous sûr de vouloir supprimer cette organisation ?"
 
 #: ckanext/scheming/templates/scheming/organization/group_form.html:28
 msgid "Save Organization"
@@ -177,8 +177,7 @@ msgid ""
 "dataset_type not passed to template. your version of CKAN might not be "
 "compatible with ckanext-scheming"
 msgstr ""
-"dataset_type non converti selon le modèle. Il est possible que votre "
-"version de CKAN ne soit pas compatible avec ckanext-scheming"
+"dataset_type non converti selon le modèle. Il est possible que votre version de CKAN ne soit pas compatible avec ckanext-scheming"
 
 #: ckanext/scheming/templates/scheming/package/snippets/resource_form.html:34
 msgid "Resource Type does not exist"
@@ -189,14 +188,12 @@ msgid "Save & add another"
 msgstr "Enregistrer et ajouter un autre"
 
 #: ckanext/scheming/templates/scheming/package/snippets/resources_list.html:17
-#, fuzzy
 msgid "Core Resources"
 msgstr "Ressource manquante"
 
 #: ckanext/scheming/templates/scheming/package/snippets/resources_list.html:25
-#, fuzzy
 msgid "This dataset has no core resources"
-msgstr "Cet ensemble de données ne contient aucune donnée"
+msgstr "Cet ensemble de données ne contient aucune ressource de base"
 
 #: ckanext/scheming/templates/scheming/package/snippets/resources_list.html:30
 msgid "Data and Resources"
@@ -208,8 +205,7 @@ msgid ""
 "<p class=\"empty\">This dataset has no data, <a href=\"%(url)s\">why not "
 "add some?</a></p>"
 msgstr ""
-"<p class=\"empty\">Cet ensemble de données ne contient aucune donnée,<a "
-"href=\"%(url)s\">pourquoi ne pas y ajouter ?</a></p>"
+"<p class=\"empty\">Cet ensemble de données ne contient aucune donnée,<a href=\"%(url)s\">et si vous en ajoutiez ?</a></p>"
 
 #: ckanext/scheming/templates/scheming/package/snippets/resources_list.html:43
 msgid "This dataset has no data"
@@ -220,9 +216,8 @@ msgid "Missing Resources"
 msgstr "Ressources manquantes"
 
 #: ckanext/scheming/templates/scheming/package/snippets/resources_list.html:70
-#, fuzzy
 msgid "Extra Resources"
-msgstr "Données et ressources"
+msgstr "Données supplémentaires"
 
 #: ckanext/scheming/templates/scheming/snippets/errors.html:4
 msgid "The form contains invalid entries:"
@@ -260,4 +255,3 @@ msgstr "Le formulaire contient des entrées non valides:"
 
 #~ msgid "Download Data Template"
 #~ msgstr "Télécharger le modèle de données"
-
