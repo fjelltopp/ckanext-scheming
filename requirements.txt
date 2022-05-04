@@ -1,6 +1,6 @@
 pyyaml==5.3.1
 ckanapi==4.3
-ckantoolkit==0.0.3
+ckantoolkit>=0.0.3
 pytz==2016.7
 pycountry==19.8.18
 python-slugify==4.0.0
