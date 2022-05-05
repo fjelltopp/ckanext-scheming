@@ -74,8 +74,7 @@ def scheming_natural_sort(llist):
     Sorts a list of tuples with strings "naturally". I.e 1,2...11 and not 1,11,2..
     """
 
-    llist.sort(key=lambda key: [convert(c) for c in re.split('([0-9]+)', key[0])])
-    return llist
+    return sorted(llist, key=lambda key: [convert(c) for c in re.split('([0-9]+)', key[0])])
 
 
 @helper
