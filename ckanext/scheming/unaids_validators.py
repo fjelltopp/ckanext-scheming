@@ -1,4 +1,4 @@
-from ckanext.scheming.unaids_helpers import comma_swap_formatter
+from ckanext.scheming.unaids_helpers import comma_swap_formatter, lower_formatter
 from ckanext.scheming.validation import scheming_validator
 from ckan.logic.validators import package_name_validator
 import slugify
@@ -88,7 +88,7 @@ def autogenerate(field, schema):
     template_args = field[u'template_args']
     template_formatters = field.get(u'template_formatters', dict())
     formatters = {
-        "lower": __lower_formatter,
+        "lower": lower_formatter,
         "slugify": slugify.slugify,
         "comma_swap": comma_swap_formatter
     }
@@ -120,6 +120,3 @@ def autofill(field, schema):
 
     return validator
 
-
-def __lower_formatter(input):
-    return input.lower()
