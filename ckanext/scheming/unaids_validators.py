@@ -1,3 +1,4 @@
+from ckanext.scheming.unaids_helpers import comma_swap_formatter, lower_formatter
 from ckanext.scheming.validation import scheming_validator
 from ckan.logic.validators import package_name_validator
 import slugify
@@ -87,9 +88,9 @@ def autogenerate(field, schema):
     template_args = field[u'template_args']
     template_formatters = field.get(u'template_formatters', dict())
     formatters = {
-        "lower": __lower_formatter,
+        "lower": lower_formatter,
         "slugify": slugify.slugify,
-        "comma_swap": __comma_swap_formatter
+        "comma_swap": comma_swap_formatter
     }
     f_list = []
     for f in template_formatters:
@@ -118,22 +119,3 @@ def autofill(field, schema):
             data[key] = field_value
 
     return validator
-
-
-def __lower_formatter(input):
-    return input.lower()
-
-
-def __comma_swap_formatter(input):
-    """
-    Swaps the parts of a string around a single comma.
-    Use to format e.g. "Tanzania, Republic of" as "Republic of Tanzania"
-    """
-    if input.count(',') == 1:
-        parts = input.split(',')
-        stripped_parts = map(lambda x: x.strip(), parts)
-        reversed_parts = reversed(stripped_parts)
-        joined_parts = " ".join(reversed_parts)
-        return joined_parts
-    else:
-        return input
