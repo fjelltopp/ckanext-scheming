@@ -119,4 +119,3 @@ def autofill(field, schema):
             data[key] = field_value
 
     return validator
-

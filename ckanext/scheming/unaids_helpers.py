@@ -120,5 +120,6 @@ def comma_swap_formatter(input):
     else:
         return input
 
+
 def lower_formatter(input):
     return input.lower()
