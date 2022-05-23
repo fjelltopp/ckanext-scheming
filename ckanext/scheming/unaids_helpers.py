@@ -104,3 +104,22 @@ def get_resource_field(dataset_type, resource_type, field_name):
         return field
     except IndexError:
         return {}
+
+
+def comma_swap_formatter(input):
+    """
+    Swaps the parts of a string around a single comma.
+    Use to format e.g. "Tanzania, Republic of" as "Republic of Tanzania"
+    """
+    if input.count(',') == 1:
+        parts = input.split(',')
+        stripped_parts = list(map(lambda x: x.strip(), parts))
+        reversed_parts = reversed(stripped_parts)
+        joined_parts = " ".join(reversed_parts)
+        return joined_parts
+    else:
+        return input
+
+
+def lower_formatter(input):
+    return input.lower()
