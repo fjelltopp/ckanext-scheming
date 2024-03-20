@@ -44,11 +44,37 @@ def get_missing_resources(pkg, schema):
 
     ret = []
     for r in schema.get('resources', []):
-        if r['resource_type'] not in pkg_res:
-            ret.append(r)
+        resource_type_ = r['resource_type']
+        if resource_type_ not in pkg_res:
+            if include_vmmc_resources(pkg, resource_type_):
+                ret.append(r)
 
     return ret
 
+def include_vmmc_resources(pkg, resource_type):
+    vmmc_countries = [
+        "Botswana",
+        "Eswatini",
+        "Ethiopia",
+        "Kenya",
+        "Lesotho",
+        "Malawi",
+        "Mozambique",
+        "Namibia",
+        "Rwanda",
+        "South Africa",
+        "South Sudan",
+        "Tanzania",
+        "Uganda",
+        "Zambia",
+        "Zimbabwe"
+    ]
+    vmmc_resource_types = ['inputs-unaids-vmmc-coverage-inputs', 'inputs-unaids-vmmc-coverage-outputs']
+    country_ = pkg.get('geo-location')
+    if resource_type in vmmc_resource_types and country_ not in vmmc_countries:
+        return False
+    else:
+        return True
 
 @helpers.helper
 def scheming_country_list():
