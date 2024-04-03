@@ -51,6 +51,7 @@ def get_missing_resources(pkg, schema):
 
     return ret
 
+
 def include_vmmc_resources(pkg, resource_type):
     vmmc_countries = [
         "Botswana",
@@ -76,6 +77,7 @@ def include_vmmc_resources(pkg, resource_type):
     else:
         return True
 
+
 @helpers.helper
 def scheming_country_list():
     """
@@ -87,6 +89,10 @@ def scheming_country_list():
             "text": country.name,
             "value": country.name
         })
+    countries.append({
+        "text": "Zanzibar",
+        "value": "Zanzibar"
+    })
     return sorted(countries, key=lambda k: k['value'])
 
 
