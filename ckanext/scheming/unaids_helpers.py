@@ -65,7 +65,7 @@ def include_vmmc_resources(pkg, resource_type):
         "Rwanda",
         "South Africa",
         "South Sudan",
-        "Tanzania",
+        "Tanzania, United Republic of",
         "Uganda",
         "Zambia",
         "Zimbabwe"
