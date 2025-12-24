@@ -158,7 +158,7 @@ class _SchemingMixin(object):
     @run_once_for_caller('_scheming_add_template_directory', lambda: None)
     def _add_template_directory(self, config):
         add_template_directory(config, 'templates')
-        add_resource('fanstatic', 'scheming')
+        add_resource('assets', 'ckanext-scheming')
 
     @staticmethod
     def _load_presets(config):

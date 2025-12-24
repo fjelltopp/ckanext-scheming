@@ -1,65 +1,183 @@
 import json
 
 import pytest
-import ckantoolkit
 from bs4 import BeautifulSoup
-from ckantoolkit.tests.factories import Sysadmin, Dataset
-from ckantoolkit.tests.helpers import call_action
+
+from ckan.plugins.toolkit import check_ckan_version, h
+
+from ckan.tests.factories import Dataset
+from ckan.tests.helpers import call_action
 
 
 @pytest.fixture
 def sysadmin_env():
-    user = Sysadmin()
-    return {"REMOTE_USER": user["name"].encode("ascii")}
+    try:
+        from ckan.tests.factories import SysadminWithToken
+        user = SysadminWithToken()
+        return {'Authorization': user['token']}
+    except ImportError:
+        # ckan <= 2.9
+        from ckan.tests.factories import Sysadmin
+        user = Sysadmin()
+        return {"REMOTE_USER": user["name"].encode("ascii")}
+
+
+def _get_package_new_page(app, env, type_='test-schema'):
+    if check_ckan_version(min_version="2.10.0"):
+        return app.get(url="/{0}/new".format(type_), headers=env)
+    else:
+        return app.get(url="/{0}/new".format(type_), extra_environ=env)
+
+
+def _get_package_update_page(app, id, env):
+
+    if check_ckan_version(min_version="2.10.0"):
+        return app.get(url="/test-schema/edit/{}".format(id), headers=env)
+    else:
+        return app.get(url="/test-schema/edit/{}".format(id), extra_environ=env)
+
+
+def _get_resource_new_page(app, id, env):
+    url = '/dataset/{}/resource/new'.format(id)
+
+    if check_ckan_version(min_version="2.10.0"):
+        return app.get(url, headers=env)
+    else:
+        return app.get(url, extra_environ=env)
+
+
+def _get_resource_update_page(app, id, resource_id, env):
+    url = '/dataset/{}/resource/{}/edit'.format(id, resource_id)
+
+    if check_ckan_version(min_version="2.10.0"):
+        return app.get(url, headers=env)
+    else:
+        return app.get(url, extra_environ=env)
+
+
+def _get_organization_new_page(app, env, type_="organization"):
+
+    if check_ckan_version(min_version="2.10.0"):
+        return app.get(url="/{0}/new".format(type_), headers=env)
+    else:
+        return app.get(url="/{0}/new".format(type_), extra_environ=env)
+
+def _get_group_new_page(app, env, type_="group"):
+
+    if check_ckan_version(min_version="2.10.0"):
+        return app.get(url="/{0}/new".format(type_), headers=env)
+    else:
+        return app.get(url="/{0}/new".format(type_), extra_environ=env)
 
 
 def _get_package_new_page_as_sysadmin(app):
-    user = Sysadmin()
-    env = {"REMOTE_USER": user["name"].encode("ascii")}
-    response = app.get(url="/test-schema/new", extra_environ=env)
+    try:
+        from ckan.tests.factories import SysadminWithToken
+        user = SysadminWithToken()
+        env = {'Authorization': user['token']}
+    except ImportError:
+        # ckan <= 2.9
+        from ckan.tests.factories import Sysadmin
+        user = Sysadmin()
+        env = {"REMOTE_USER": user["name"].encode("ascii")}
+
+    response = _get_package_new_page(app, env)
     return env, response
 
 
 def _get_package_update_page_as_sysadmin(app, id):
-    user = Sysadmin()
-    env = {"REMOTE_USER": user["name"].encode("ascii")}
-    response = app.get(
-        url="/test-schema/edit/{}".format(id), extra_environ=env
-    )
+    try:
+        from ckan.tests.factories import SysadminWithToken
+        user = SysadminWithToken()
+        env = {'Authorization': user['token']}
+    except ImportError:
+        # ckan <= 2.9
+        from ckan.tests.factories import Sysadmin
+        user = Sysadmin()
+        env = {"REMOTE_USER": user["name"].encode("ascii")}
+
+    response = _get_package_update_page(app, id, env)
     return env, response
 
 
 def _get_resource_new_page_as_sysadmin(app, id):
-    user = Sysadmin()
-    env = {"REMOTE_USER": user["name"].encode("ascii")}
-    response = app.get(
-        url="/dataset/new_resource/{}".format(id), extra_environ=env
-    )
+    try:
+        from ckan.tests.factories import SysadminWithToken
+        user = SysadminWithToken()
+        env = {'Authorization': user['token']}
+    except ImportError:
+        # ckan <= 2.9
+        from ckan.tests.factories import Sysadmin
+        user = Sysadmin()
+        env = {"REMOTE_USER": user["name"].encode("ascii")}
+
+    response = _get_resource_new_page(app, id, env)
     return env, response
 
 
 def _get_resource_update_page_as_sysadmin(app, id, resource_id):
-    user = Sysadmin()
-    env = {"REMOTE_USER": user["name"].encode("ascii")}
-    response = app.get(
-        url="/dataset/{}/resource_edit/{}".format(id, resource_id),
-        extra_environ=env,
-    )
+    try:
+        from ckan.tests.factories import SysadminWithToken
+        user = SysadminWithToken()
+        env = {'Authorization': user['token']}
+    except ImportError:
+        # ckan <= 2.9
+        from ckan.tests.factories import Sysadmin
+        user = Sysadmin()
+        env = {"REMOTE_USER": user["name"].encode("ascii")}
+
+    response = _get_resource_update_page(app, id, resource_id, env)
     return env, response
 
 
 def _get_organization_new_page_as_sysadmin(app, type="organization"):
-    user = Sysadmin()
-    env = {"REMOTE_USER": user["name"].encode("ascii")}
-    response = app.get(url="/{0}/new".format(type), extra_environ=env)
+    try:
+        from ckan.tests.factories import SysadminWithToken
+        user = SysadminWithToken()
+        env = {'Authorization': user['token']}
+    except ImportError:
+        # ckan <= 2.9
+        from ckan.tests.factories import Sysadmin
+        user = Sysadmin()
+        env = {"REMOTE_USER": user["name"].encode("ascii")}
+
+    response = _get_organization_new_page(app, env, type)
     return env, response
 
 
 def _get_group_new_page_as_sysadmin(app, type="group"):
-    user = Sysadmin()
-    env = {"REMOTE_USER": user["name"].encode("ascii")}
-    response = app.get(url="/{0}/new".format(type), extra_environ=env)
+    try:
+        from ckan.tests.factories import SysadminWithToken
+        user = SysadminWithToken()
+        env = {'Authorization': user['token']}
+    except ImportError:
+        # ckan <= 2.9
+        from ckan.tests.factories import Sysadmin
+        user = Sysadmin()
+        env = {"REMOTE_USER": user["name"].encode("ascii")}
+
+    response = _get_group_new_page(app, env, type)
     return env, response
+
+
+def _get_organization_form(html):
+    return BeautifulSoup(html).select("form")[1]
+
+
+def _get_group_form(html):
+    return _get_organization_form(html)
+
+
+def _post_data(app, url, data, env):
+    try:
+        if check_ckan_version(min_version="2.11.0a0"):
+            return app.post(url, headers=env, data=data, follow_redirects=False)
+        else:
+            return app.post(
+                url, environ_overrides=env, data=data, follow_redirects=False
+            )
+    except TypeError:
+        return app.post(url.encode('ascii'), params=data, extra_environ=env)
 
 
 @pytest.mark.usefixtures("clean_db")
@@ -78,10 +196,9 @@ class TestDatasetFormNew(object):
 
     def test_resource_form_includes_custom_fields(self, app, sysadmin_env):
         dataset = Dataset(type="test-schema", name="resource-includes-custom")
-        response = app.get(
-            '/dataset/new_resource/' + dataset["id"],
-            extra_environ=sysadmin_env,
-        )
+
+        response = _get_resource_new_page(app, dataset["id"], sysadmin_env)
+
         form = BeautifulSoup(response.body).select_one("#resource-edit")
         assert form.select("input[name=camels_in_photo]")
 
@@ -91,7 +208,7 @@ class TestDatasetFormNew(object):
         `DefaultDatasetForm::setup_template_variables` in order to change
         it.
         """
-        response = app.get(url="/dataset/new", extra_environ=sysadmin_env)
+        response = _get_package_new_page(app, sysadmin_env, type_="dataset")
         page = BeautifulSoup(response.body)
         licenses = page.select('#field-license_id option')
         assert licenses
@@ -120,7 +237,7 @@ class TestOrganizationFormNew(object):
 @pytest.mark.usefixtures("clean_db")
 class TestGroupFormNew(object):
     @pytest.mark.skipif(
-        not ckantoolkit.check_ckan_version(min_version="2.7.0"),
+        not check_ckan_version(min_version="2.7.0"),
         reason="Unspecified"
     )
     def test_group_form_includes_custom_field(self, app):
@@ -143,7 +260,7 @@ class TestGroupFormNew(object):
 @pytest.mark.usefixtures("clean_db")
 class TestCustomGroupFormNew(object):
     @pytest.mark.skipif(
-        not ckantoolkit.check_ckan_version(min_version="2.8.0"),
+        not check_ckan_version(min_version="2.8.0"),
         reason="Unspecified"
     )
     def test_group_form_includes_custom_field(self, app):
@@ -161,7 +278,7 @@ class TestCustomGroupFormNew(object):
 @pytest.mark.usefixtures("clean_db")
 class TestCustomOrgFormNew(object):
     @pytest.mark.skipif(
-        not ckantoolkit.check_ckan_version(min_version="2.8.0"),
+        not check_ckan_version(min_version="2.8.0"),
         reason="Unspecified"
     )
     def test_org_form_includes_custom_field(self, app):
@@ -195,20 +312,17 @@ class TestJSONDatasetForm(object):
         data["a_json_field"] = json_value
 
         url = '/test-schema/new'
-        try:
-            app.post(url, environ_overrides=sysadmin_env, data=data, follow_redirects=False)
-        except TypeError:
-            app.post(url.encode('ascii'), params=data, extra_environ=sysadmin_env)
+        _post_data(app, url, data, sysadmin_env)
 
         dataset = call_action("package_show", id="json_dataset_1")
         assert dataset["a_json_field"] == value
 
-    def test_dataset_form_update(self, app):
+    def test_dataset_form_update(self, app, sysadmin_env):
         value = {"a": 1, "b": 2}
         dataset = Dataset(type="test-schema", a_json_field=value)
 
-        env, response = _get_package_update_page_as_sysadmin(
-            app, dataset["id"]
+        response = _get_package_update_page(
+            app, dataset["id"], sysadmin_env
         )
         form = BeautifulSoup(response.body).select_one("#dataset-edit")
         assert form.select_one(
@@ -225,10 +339,8 @@ class TestJSONDatasetForm(object):
         }
 
         url = '/dataset/edit/' + dataset["id"]
-        try:
-            app.post(url, environ_overrides=env, data=data, follow_redirects=False)
-        except TypeError:
-            app.post(url.encode('ascii'), params=data, extra_environ=env)
+
+        _post_data(app, url, data, sysadmin_env)
 
         dataset = call_action("package_show", id=dataset["id"])
 
@@ -237,19 +349,19 @@ class TestJSONDatasetForm(object):
 
 @pytest.mark.usefixtures("clean_db")
 class TestJSONResourceForm(object):
-    def test_resource_form_includes_json_fields(self, app):
+    def test_resource_form_includes_json_fields(self, app, sysadmin_env):
         dataset = Dataset(type="test-schema")
 
-        env, response = _get_resource_new_page_as_sysadmin(app, dataset["id"])
+        response = _get_resource_new_page(app, dataset["id"], sysadmin_env)
         form = BeautifulSoup(response.body).select_one("#resource-edit")
         assert form.select("textarea[name=a_resource_json_field]")
 
-    def test_resource_form_create(self, app):
+    def test_resource_form_create(self, app, sysadmin_env):
         dataset = Dataset(type="test-schema")
 
-        env, response = _get_resource_new_page_as_sysadmin(app, dataset["id"])
+        response = _get_resource_new_page(app, dataset["id"], sysadmin_env)
 
-        url = ckantoolkit.h.url_for(
+        url = h.url_for(
             "test-schema_resource.new", id=dataset["id"]
         )
         if not url.startswith('/'):  # ckan < 2.9
@@ -265,15 +377,12 @@ class TestJSONResourceForm(object):
             "a_resource_json_field": json_value,
             "name": dataset["name"],
         }
-        try:
-            app.post(url, environ_overrides=env, data=data, follow_redirects=False)
-        except TypeError:
-            app.post(url.encode('ascii'), params=data, extra_environ=env)
+        _post_data(app, url, data, sysadmin_env)
         dataset = call_action("package_show", id=dataset["id"])
 
         assert dataset["resources"][0]["a_resource_json_field"] == value
 
-    def test_resource_form_update(self, app):
+    def test_resource_form_update(self, app, sysadmin_env):
         value = {"a": 1, "b": 2}
         dataset = Dataset(
             type="test-schema",
@@ -285,15 +394,15 @@ class TestJSONResourceForm(object):
             ],
         )
 
-        env, response = _get_resource_update_page_as_sysadmin(
-            app, dataset["id"], dataset["resources"][0]["id"]
+        response = _get_resource_update_page(
+            app, dataset["id"], dataset["resources"][0]["id"], sysadmin_env
         )
         form = BeautifulSoup(response.body).select_one("#resource-edit")
         assert form.select_one(
             "textarea[name=a_resource_json_field]"
         ).text == json.dumps(value, indent=2)
 
-        url = ckantoolkit.h.url_for(
+        url = h.url_for(
             "test-schema_resource.edit",
             id=dataset["id"],
             resource_id=dataset["resources"][0]["id"],
@@ -313,10 +422,7 @@ class TestJSONResourceForm(object):
             "a_resource_json_field": json_value,
             "name": dataset["name"],
         }
-        try:
-            app.post(url, environ_overrides=env, data=data, follow_redirects=False)
-        except TypeError:
-            app.post(url.encode('ascii'), params=data, extra_environ=env)
+        _post_data(app, url, data, sysadmin_env)
 
         dataset = call_action("package_show", id=dataset["id"])
 
