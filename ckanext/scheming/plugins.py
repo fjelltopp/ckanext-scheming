@@ -178,6 +178,20 @@ class _SchemingMixin(object):
             for field in _load_schema(preset_path)['presets']
         }
 
+    def declare_config_options(self, declaration, key):
+        """
+        Declare config options for CKAN 2.9+
+        """
+        # Each plugin class (Datasets, Groups, Organizations) defines these
+        if hasattr(self, 'SCHEMA_OPTION'):
+            declaration.declare(self.SCHEMA_OPTION, '')
+        if hasattr(self, 'SCHEMA_DIRECTORY_OPTION'):
+            declaration.declare(self.SCHEMA_DIRECTORY_OPTION, '')
+        if hasattr(self, 'FALLBACK_OPTION'):
+            declaration.declare(self.FALLBACK_OPTION, False)
+        # Also declare presets option (shared by all)
+        declaration.declare('scheming.presets', DEFAULT_PRESETS)
+
     def update_config(self, config):
         if self.instance:
             # reloading plugins, probably in WebTest
