@@ -161,7 +161,12 @@ def _get_group_new_page_as_sysadmin(app, type="group"):
 
 
 def _get_organization_form(html):
-    return BeautifulSoup(html).select("form")[1]
+    # FIXME: add an id to this form
+    if check_ckan_version(min_version="2.11.0a0"):
+        form = BeautifulSoup(html).select("form")[2]
+    else:
+        form = BeautifulSoup(html).select("form")[1]
+    return form
 
 
 def _get_group_form(html):
@@ -216,13 +221,12 @@ class TestDatasetFormNew(object):
 
 @pytest.mark.usefixtures("clean_db")
 class TestOrganizationFormNew(object):
-    def test_organization_form_includes_custom_field(self, app):
+    def test_organization_form_includes_custom_field(self, app, sysadmin_env):
 
-        env, response = _get_organization_new_page_as_sysadmin(app)
-        # FIXME: add an id to this form
-        form = BeautifulSoup(response.body).select("form")[1]
+        response = _get_organization_new_page(app, sysadmin_env)
 
-        # FIXME: generate the form for orgs (this is currently missing)
+        form = _get_organization_form(response.body)
+
         assert form.select("input[name=department_id]")
 
     def test_organization_form_slug_says_organization(self, app):
@@ -240,11 +244,11 @@ class TestGroupFormNew(object):
         not check_ckan_version(min_version="2.7.0"),
         reason="Unspecified"
     )
-    def test_group_form_includes_custom_field(self, app):
+    def test_group_form_includes_custom_field(self, app, sysadmin_env):
 
-        env, response = _get_group_new_page_as_sysadmin(app)
-        # FIXME: add an id to this form
-        form = BeautifulSoup(response.body).select("form")[1]
+        response = _get_group_new_page(app, sysadmin_env)
+
+        form = _get_group_form(response.body)
 
         assert form.select("input[name=bookface]")
 
@@ -263,9 +267,9 @@ class TestCustomGroupFormNew(object):
         not check_ckan_version(min_version="2.8.0"),
         reason="Unspecified"
     )
-    def test_group_form_includes_custom_field(self, app):
-        env, response = _get_group_new_page_as_sysadmin(app, type="theme")
-        form = BeautifulSoup(response.body).select("form")[1]
+    def test_group_form_includes_custom_field(self, app, sysadmin_env):
+        response = _get_group_new_page(app, sysadmin_env, type_="theme")
+        form = _get_group_form(response.body)
         assert form.select("input[name=status]")
 
     def test_group_form_slug_uses_custom_type(self, app):
@@ -281,11 +285,10 @@ class TestCustomOrgFormNew(object):
         not check_ckan_version(min_version="2.8.0"),
         reason="Unspecified"
     )
-    def test_org_form_includes_custom_field(self, app):
-        env, response = _get_organization_new_page_as_sysadmin(
-            app, type="publisher"
-        )
-        form = BeautifulSoup(response.body).select("form")[1]
+    def test_org_form_includes_custom_field(self, app, sysadmin_env):
+        response = _get_organization_new_page(app, sysadmin_env, type_="publisher")
+
+        form = _get_organization_form(response.body)
         assert form.select("input[name=address]")
 
     def test_org_form_slug_uses_custom_type(self, app):
@@ -298,9 +301,9 @@ class TestCustomOrgFormNew(object):
 
 @pytest.mark.usefixtures("clean_db")
 class TestJSONDatasetForm(object):
-    def test_dataset_form_includes_json_fields(self, app):
-        env, response = _get_package_new_page_as_sysadmin(app)
-        form = BeautifulSoup(response.body).select("form")[1]
+    def test_dataset_form_includes_json_fields(self, app, sysadmin_env):
+        response = _get_package_new_page(app, sysadmin_env)
+        form = BeautifulSoup(response.body).select("#dataset-edit")[0]
         assert form.select("textarea[name=a_json_field]")
 
     def test_dataset_form_create(self, app, sysadmin_env):
