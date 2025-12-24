@@ -16,7 +16,7 @@
             "field_name": "name",
             "label": "URL",
             "form_snippet": "text.html",
-            "validators": "auto_create_valid_name not_empty unicode name_validator package_name_validator",
+            "validators": "auto_create_valid_name not_empty unicode_safe name_validator package_name_validator",
             "classes": ["hidden"]
         },
         {

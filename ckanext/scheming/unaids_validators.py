@@ -1,5 +1,5 @@
 from ckanext.scheming.unaids_helpers import comma_swap_formatter, lower_formatter
-from ckanext.scheming.validation import scheming_validator
+from ckanext.scheming.decorators import scheming_validator
 from ckan.logic.validators import package_name_validator
 import slugify
 import copy
@@ -70,6 +70,7 @@ def auto_create_valid_name(field, schema):
         if context.get('package'):
             data[key] = context['package'].name
             return
+        original_name = data[key]
         counter = 1
         while True:
             package_name_errors = copy.deepcopy(errors)
@@ -77,7 +78,7 @@ def auto_create_valid_name(field, schema):
             if package_name_errors[key] == errors[key]:
                 break
             else:
-                data[key] = "{}-{}".format(data[key], counter)
+                data[key] = "{}-{}".format(original_name, counter)
                 counter = counter + 1
     return validator
 

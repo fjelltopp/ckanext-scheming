@@ -1,3 +1,4 @@
+import ast
 import json
 import datetime
 from collections import defaultdict
@@ -15,10 +16,12 @@ from ckantoolkit import (
 )
 import ckanext.scheming.helpers as sh
 from ckanext.scheming.errors import SchemingException
+from ckanext.scheming.decorators import scheming_validator
 
 OneOf = get_validator('OneOf')
 ignore_missing = get_validator('ignore_missing')
 not_empty = get_validator('not_empty')
+unicode_safe = get_validator('unicode_safe')
 
 all_validators = {}
 
@@ -28,18 +31,6 @@ def validator(fn):
     collect helper functions into ckanext.scheming.all_helpers dict
     """
     all_validators[fn.__name__] = fn
-    return fn
-
-
-def scheming_validator(fn):
-    """
-    Decorate a validator that needs to have the scheming fields
-    passed with this function. When generating navl validator lists
-    the function decorated will be called passing the field
-    and complete schema to produce the actual validator for each field.
-    """
-    fn.is_a_scheming_validator = True
-    validator(fn)
     return fn
 
 
@@ -424,16 +415,24 @@ def validators_from_string(s, field, schema):
     """
     convert a schema validators string to a list of validators
 
-    e.g. "if_empty_same_as(name) unicode" becomes:
-    [if_empty_same_as("name"), unicode]
+    e.g. "if_empty_same_as(name) unicode_safe" becomes:
+    [if_empty_same_as("name"), unicode_safe]
     """
     out = []
     parts = s.split()
     for p in parts:
         if '(' in p and p[-1] == ')':
             name, args = p.split('(', 1)
-            args = args[:-1].split(',')  # trim trailing ')', break up
-            v = get_validator_or_converter(name)(*args)
+            args = args[:-1]  # trim trailing ')'
+            try:
+                parsed_args = ast.literal_eval(args)
+                if not isinstance(parsed_args, tuple) or not parsed_args:
+                    # it's a single argument. `not parsed_args` means that this single
+                    # argument is an empty tuple, for example: "default(())"
+                    parsed_args = (parsed_args,)
+            except (ValueError, TypeError, SyntaxError, MemoryError):
+                parsed_args = args.split(',')
+            v = get_validator_or_converter(name)(*parsed_args)
         else:
             v = get_validator_or_converter(p)
         if getattr(v, 'is_a_scheming_validator', False):
@@ -447,7 +446,7 @@ def get_validator_or_converter(name):
     Get a validator or converter by name
     """
     if name == 'unicode':
-        return six.text_type
+        return unicode_safe
     try:
         v = get_validator(name)
         return v

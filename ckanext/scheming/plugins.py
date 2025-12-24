@@ -564,9 +564,9 @@ def _field_validators(f, schema, convert_extras):
             schema
         )
     elif helpers.scheming_field_required(f):
-        validators = [not_empty, six.text_type]
+        validators = [not_empty]
     else:
-        validators = [ignore_missing, six.text_type]
+        validators = [ignore_missing]
 
     if convert_extras:
         validators.append(convert_to_extras)
