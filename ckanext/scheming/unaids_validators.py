@@ -53,7 +53,7 @@ def unique_combination(field, schema):
                 package_id
             )
 
-        results = get_action('package_search')({}, {'q': query_string})
+        results = get_action('package_search')({'user': context.get('user')}, {'q': query_string})
         if results.get('count'):
             errors[key].append(
                 _('A package already exists for: {}. Please update '
