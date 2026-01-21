@@ -99,6 +99,7 @@ class _SchemingMixin(object):
     _schema_urls = tuple()
     _schemas = dict()
     _expanded_schemas = tuple()
+    _config_options_declared = False
 
     @run_once_for_caller('_scheming_get_helpers', dict)
     def get_helpers(self):
@@ -189,8 +190,10 @@ class _SchemingMixin(object):
             declaration.declare(self.SCHEMA_DIRECTORY_OPTION, '')
         if hasattr(self, 'FALLBACK_OPTION'):
             declaration.declare(self.FALLBACK_OPTION, False)
-        # Also declare presets option (shared by all)
-        declaration.declare('scheming.presets', DEFAULT_PRESETS)
+        # Only declare shared presets option once across all scheming plugins
+        if not _SchemingMixin._config_options_declared:
+            declaration.declare('scheming.presets', DEFAULT_PRESETS)
+            _SchemingMixin._config_options_declared = True
 
     def update_config(self, config):
         if self.instance:
