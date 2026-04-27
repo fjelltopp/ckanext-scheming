@@ -3,7 +3,7 @@
 {% block heading_private %}
   {%- set schema = h.scheming_get_dataset_schema(package.type) -%}
   {% if schema.name %}
-  <span class="dataset-type label label-default">
+  <span class="dataset-type badge">
     {{ _(schema.name) }}
   </span>
   {% endif %}

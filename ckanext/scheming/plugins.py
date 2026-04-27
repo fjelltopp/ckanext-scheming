@@ -99,6 +99,7 @@ class _SchemingMixin(object):
     _schema_urls = tuple()
     _schemas = dict()
     _expanded_schemas = tuple()
+    _config_options_declared = False
 
     @run_once_for_caller('_scheming_get_helpers', dict)
     def get_helpers(self):
@@ -158,7 +159,7 @@ class _SchemingMixin(object):
     @run_once_for_caller('_scheming_add_template_directory', lambda: None)
     def _add_template_directory(self, config):
         add_template_directory(config, 'templates')
-        add_resource('fanstatic', 'scheming')
+        add_resource('assets', 'ckanext-scheming')
 
     @staticmethod
     def _load_presets(config):
@@ -177,6 +178,22 @@ class _SchemingMixin(object):
             for preset_path in presets
             for field in _load_schema(preset_path)['presets']
         }
+
+    def declare_config_options(self, declaration, key):
+        """
+        Declare config options for CKAN 2.9+
+        """
+        # Each plugin class (Datasets, Groups, Organizations) defines these
+        if hasattr(self, 'SCHEMA_OPTION'):
+            declaration.declare(self.SCHEMA_OPTION, '')
+        if hasattr(self, 'SCHEMA_DIRECTORY_OPTION'):
+            declaration.declare(self.SCHEMA_DIRECTORY_OPTION, '')
+        if hasattr(self, 'FALLBACK_OPTION'):
+            declaration.declare(self.FALLBACK_OPTION, False)
+        # Only declare shared presets option once across all scheming plugins
+        if not _SchemingMixin._config_options_declared:
+            declaration.declare('scheming.presets', DEFAULT_PRESETS)
+            _SchemingMixin._config_options_declared = True
 
     def update_config(self, config):
         if self.instance:
@@ -263,6 +280,7 @@ class _GroupOrganizationMixin(object):
 class SchemingDatasetsPlugin(p.SingletonPlugin, DefaultDatasetForm,
                              _SchemingMixin, DefaultTranslation):
     p.implements(p.IConfigurer)
+    p.implements(p.IConfigDeclaration)
     p.implements(p.ITemplateHelpers)
     p.implements(p.IDatasetForm, inherit=True)
     p.implements(p.IActions)
@@ -373,6 +391,7 @@ class SchemingDatasetsPlugin(p.SingletonPlugin, DefaultDatasetForm,
 class SchemingGroupsPlugin(p.SingletonPlugin, _GroupOrganizationMixin,
                            DefaultGroupForm, _SchemingMixin, DefaultTranslation):
     p.implements(p.IConfigurer)
+    p.implements(p.IConfigDeclaration)
     p.implements(p.ITemplateHelpers)
     p.implements(p.IGroupForm, inherit=True)
     p.implements(p.IActions)
@@ -406,6 +425,7 @@ class SchemingOrganizationsPlugin(p.SingletonPlugin, _GroupOrganizationMixin,
                                   DefaultOrganizationForm, _SchemingMixin,
                                   DefaultTranslation):
     p.implements(p.IConfigurer)
+    p.implements(p.IConfigDeclaration)
     p.implements(p.ITemplateHelpers)
     p.implements(p.IGroupForm, inherit=True)
     p.implements(p.IActions)
@@ -564,9 +584,9 @@ def _field_validators(f, schema, convert_extras):
             schema
         )
     elif helpers.scheming_field_required(f):
-        validators = [not_empty, six.text_type]
+        validators = [not_empty]
     else:
-        validators = [ignore_missing, six.text_type]
+        validators = [ignore_missing]
 
     if convert_extras:
         validators.append(convert_to_extras)

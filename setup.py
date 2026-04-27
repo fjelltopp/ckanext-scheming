@@ -24,7 +24,10 @@ setup(
     namespace_packages=['ckanext'],
     include_package_data=True,
     zip_safe=False,
-    install_requires=[],
+    install_requires=[
+        'pycountry',
+        'ckanapi',
+    ],
     entry_points="""
     [ckan.plugins]
     scheming_datasets=ckanext.scheming.plugins:SchemingDatasetsPlugin
